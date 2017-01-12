@@ -1,9 +1,28 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { reduxForm } from 'redux-form';
+import _ from 'lodash';
 
 import { createPost } from '../actions/index';
 import Header from './header';
+
+const FIELDS = {
+  title: {
+    type: 'input',
+    label: 'Title',
+    requiredMessage: 'Title cannot be empty.'
+  },
+  categories: {
+    type: 'input',
+    label: 'Categories',
+    requiredMessage: 'Please enter categories for the post.'
+  },
+  content: {
+    type: 'textarea',
+    label: 'Contents',
+    requiredMessage: 'Post content cannot be empty.'
+  }
+}
 
 class PostsNew extends Component {
 
@@ -14,7 +33,8 @@ class PostsNew extends Component {
   constructor(args) {
     super(args);
 
-    this.onSubmit = this.onSubmit.bind(this);
+    ['onSubmit', 'renderField']
+      .forEach((method) => this[method] = this[method].bind(this));
   }
 
   onSubmit(props) {
@@ -24,42 +44,30 @@ class PostsNew extends Component {
       });
   }
 
+  renderField(fieldConfiguration, field) {
+    const fieldHelper = this.props.fields[field];
+
+    return (
+      <div className={`form-group ${fieldHelper.touched && fieldHelper.invalid ? 'has-danger' : ''}`} key={field}>
+        <label>{fieldConfiguration.label}</label>
+        <fieldConfiguration.type type="text"
+          className={`form-control ${fieldHelper.touched && fieldHelper.invalid ? 'form-control-danger' : ''}`}
+          {...fieldHelper} />
+        <div className="col-form-label">
+          {fieldHelper.touched ? fieldHelper.error : ''}
+        </div>
+      </div>
+    );
+  }
+
   render() {
-
-    const { fields: { title, categories, content }, handleSubmit } = this.props;
-
-    const isValid = (field) => !(field.touched && field.invalid);
 
     return (
       <div>
         <Header />
-        <form onSubmit={handleSubmit(this.onSubmit)} className="content-container">
+        <form onSubmit={this.props.handleSubmit(this.onSubmit)} className="content-container">
           <h3>Create A New Post</h3>
-
-          <div className={`form-group ${!isValid(title) ? 'has-danger' : ''}`}>
-            <label>Title</label>
-            <input type="text" className={`form-control ${!isValid(title) ? 'form-control-danger' : ''}`} {...title} />
-            <div className="col-form-label">
-              {title.touched ? title.error : ''}
-            </div>
-          </div>
-
-          <div className={`form-group ${!isValid(categories) ? 'has-danger' : ''}`}>
-            <label>Categories</label>
-            <input type="text" className={`form-control ${!isValid(categories) ? 'form-control-danger' : ''}`} {...categories} />
-            <div className="col-form-label">
-              {categories.touched ? categories.error : ''}
-            </div>
-          </div>
-
-          <div className={`form-group ${!isValid(content) ? 'has-danger' : ''}`}>
-            <label>Content</label>
-            <textarea className={`form-control ${!isValid(content) ? 'form-control-danger' : ''}`} {...content}/>
-            <div className="col-form-label">
-              {content.touched ? content.error : ''}
-            </div>
-          </div>
-
+          {_.map(FIELDS, this.renderField)}
           <button type="submit" className="btn btn-outline-primary">Submit</button>
           <Link to="/" className="btn btn-outline-danger">Cancel</Link>
         </form>
@@ -71,27 +79,17 @@ class PostsNew extends Component {
 function validate(values) {
   const errors = {};
 
-  if (!values.title) {
-    errors.title = 'Enter a username.';
-  }
-
-  if (!values.categories) {
-    errors.categories = 'Enter categories.';
-  }
-
-  if (!values.content) {
-    errors.content = 'Enter some content.';
-  }
+  _.each(FIELDS, (configuration, field) => {
+    if (!values[field]) {
+      errors[field] = configuration.requiredMessage;
+    }
+  });
 
   return errors;
 }
 
 export default reduxForm({
   form: 'PostsNewForm',
-  fields: [
-    'title',
-    'categories',
-    'content'
-  ],
+  fields: _.keys(FIELDS),
   validate
 }, null, { createPost })(PostsNew);
