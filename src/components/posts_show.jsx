@@ -6,10 +6,6 @@ import Header from './header';
 
 class PostsShow extends Component {
 
-  static contextTypes = {
-    router: PropTypes.object
-  }
-
   constructor(args) {
     super(args);
 
@@ -24,7 +20,6 @@ class PostsShow extends Component {
   }
 
   render() {
-
     const { post } = this.props;
 
     if (!post) {
@@ -42,9 +37,10 @@ class PostsShow extends Component {
       <div>
         <Header>
           <div id="navbar" className="collapse navbar-collapse">
-            <ul className="navbar-nav mr-auto"></ul>
+            <ul className="navbar-nav mr-auto" />
             <div className="form-inline">
-              <button className="btn btn-outline-danger my-2 my-sm-0"
+              <button
+                className="btn btn-outline-danger my-2 my-sm-0"
                 onClick={this.onDelete}>
                 Delete
               </button>
@@ -61,9 +57,24 @@ class PostsShow extends Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    post: state.posts.post
-  }
-},
+PostsShow.propTypes = {
+  post: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    categories: React.PropTypes.string,
+    content: React.PropTypes.string,
+  }),
+  deletePost: React.PropTypes.func.isRequired,
+};
+
+PostsShow.defaultProps = {
+  post: null,
+};
+
+PostsShow.contextTypes = {
+  router: PropTypes.object,
+};
+
+export default connect(state => ({
+  post: state.posts.post,
+}),
 { deletePost })(PostsShow);

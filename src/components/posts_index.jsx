@@ -7,15 +7,14 @@ import Header from './header';
 class PostsIndex extends Component {
 
   renderPosts() {
-    return this.props.posts.map((post) => {
-      return (
-        <Link to={`posts/${post.id}`} key={post.id}
-          className="list-group-item list-group-item-action justify-content-between">
-          <strong>{post.title}</strong>
-          <span className="badge badge-default badge-pill">{post.categories}</span>
-        </Link>
-      );
-    });
+    return this.props.posts.map(post => (
+      <Link
+        to={`posts/${post.id}`} key={post.id}
+        className="list-group-item list-group-item-action justify-content-between">
+        <strong>{post.title}</strong>
+        <span className="badge badge-default badge-pill">{post.categories}</span>
+      </Link>
+    ));
   }
 
   render() {
@@ -23,7 +22,7 @@ class PostsIndex extends Component {
       <div>
         <Header>
           <div id="navbar" className="collapse navbar-collapse">
-            <ul className="navbar-nav mr-auto"></ul>
+            <ul className="navbar-nav mr-auto" />
             <div className="form-inline">
               <Link to="posts/new" className="btn btn-outline-success my-2 my-sm-0">
                 Add a Post
@@ -40,10 +39,16 @@ class PostsIndex extends Component {
       </div>
     );
   }
+}
+
+PostsIndex.propTypes = {
+  posts: React.PropTypes.arrayOf(React.PropTypes.shape({
+    id: React.PropTypes.number,
+    categories: React.PropTypes.string,
+    content: React.PropTypes.string,
+  })).isRequired,
 };
 
-export default connect(state => {
-  return {
-    posts: state.posts.all
-  }
-})(PostsIndex);
+export default connect(state => ({
+  posts: state.posts.all,
+}))(PostsIndex);

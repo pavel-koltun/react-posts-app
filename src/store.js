@@ -4,7 +4,7 @@ import promise from 'redux-promise';
 import reducers from './reducers';
 
 const createStoreWithMiddleware = applyMiddleware(
-  promise
+  promise,
 )(createStore);
 
 export default createStoreWithMiddleware(reducers);
