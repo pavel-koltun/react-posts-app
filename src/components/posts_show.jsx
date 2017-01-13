@@ -75,6 +75,6 @@ PostsShow.contextTypes = {
 };
 
 export default connect(state => ({
-  post: state.posts.post,
+  post: state.post,
 }),
 { deletePost })(PostsShow);

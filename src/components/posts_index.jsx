@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import _ from 'lodash';
 
 import Header from './header';
 
 class PostsIndex extends Component {
 
   renderPosts() {
-    return this.props.posts.map(post => (
+    return _.map(this.props.posts, post => (
       <Link
         to={`posts/${post.id}`} key={post.id}
         className="list-group-item list-group-item-action justify-content-between">
@@ -42,13 +43,9 @@ class PostsIndex extends Component {
 }
 
 PostsIndex.propTypes = {
-  posts: React.PropTypes.arrayOf(React.PropTypes.shape({
-    id: React.PropTypes.number,
-    categories: React.PropTypes.string,
-    content: React.PropTypes.string,
-  })).isRequired,
+  posts: React.PropTypes.shape().isRequired,
 };
 
 export default connect(state => ({
-  posts: state.posts.all,
+  posts: state.posts,
 }))(PostsIndex);
