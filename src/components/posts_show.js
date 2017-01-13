@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchPost, deletePost } from '../actions/index';
+import { deletePost } from '../actions';
 import Header from './header';
 
 class PostsShow extends Component {
@@ -16,12 +16,8 @@ class PostsShow extends Component {
     this.onDelete = this.onDelete.bind(this);
   }
 
-  componentWillMount() {
-    this.props.fetchPost(this.props.params.id);
-  }
-
   onDelete() {
-    this.props.deletePost(this.props.params.id)
+    this.props.deletePost(this.props.post.id)
       .then(() => {
         this.context.router.push('/');
       });
@@ -65,8 +61,9 @@ class PostsShow extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { post: state.posts.post };
-}
-
-export default connect(mapStateToProps, { fetchPost, deletePost })(PostsShow);
+export default connect((state) => {
+  return {
+    post: state.posts.post
+  }
+},
+{ deletePost })(PostsShow);

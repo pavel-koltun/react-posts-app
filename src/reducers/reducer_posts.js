@@ -10,7 +10,7 @@ export default function(state = INITIAL_STATE, action) {
     case FETCH_POST:
       return { ...state, post: action.payload.data };
     case FETCH_POSTS:
-      return { ...state, all: action.payload.data, post: null };
+      return { all: action.payload.data, post: null };
     default:
       return state;
   }

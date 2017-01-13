@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { createPost } from '../actions/index';
+import { createPost } from '../actions';
 import Header from './header';
 
 const FIELDS = {

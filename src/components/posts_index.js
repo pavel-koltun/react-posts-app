@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import { fetchPosts } from '../actions/index';
 import Header from './header';
 
 class PostsIndex extends Component {
-
-  componentWillMount() {
-    this.props.fetchPosts();
-  }
 
   renderPosts() {
     return this.props.posts.map((post) => {
@@ -47,10 +42,8 @@ class PostsIndex extends Component {
   }
 };
 
-function mapStateToProps(state) {
+export default connect(state => {
   return {
     posts: state.posts.all
-  };
-}
-
-export default connect(mapStateToProps, { fetchPosts })(PostsIndex);
+  }
+})(PostsIndex);
